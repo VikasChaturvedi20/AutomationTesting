@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="WebElementsDemoSuite">
+    <test name="WebElementsTests">
+        <classes>
+    <!--        <class name="tests.LoginTest"/>
+           <class name="tests.CheckboxTest"/>  
+           <class name="tests.DropdownTest"/> 
+           <class name="tests.Radiobuttom"/> 
+           <class name="tests.Buttons"/> -->
+           <class name="tests.ClickLink"/> 
+        </classes>
+    </test>
+</suite>
