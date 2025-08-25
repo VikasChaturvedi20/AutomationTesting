@@ -6,8 +6,9 @@
            <class name="tests.CheckboxTest"/>  
            <class name="tests.DropdownTest"/> 
            <class name="tests.Radiobuttom"/> 
-           <class name="tests.Buttons"/> -->
-           <class name="tests.ClickLink"/> 
+           <class name="tests.Buttons"/> 
+           <class name="tests.ClickLink"/> -->
+           <class name="tests.InputText"/>
         </classes>
     </test>
 </suite>

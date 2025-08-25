@@ -2,24 +2,24 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-08-25T15:52:47 IST" name="WebElementsDemoSuite" finished-at="2025-08-25T15:53:15 IST" duration-ms="27447">
+  <suite started-at="2025-08-25T17:56:40 IST" name="Default suite" finished-at="2025-08-25T17:57:16 IST" duration-ms="36146">
     <groups>
     </groups>
-    <test started-at="2025-08-25T15:52:47 IST" name="WebElementsTests" finished-at="2025-08-25T15:53:15 IST" duration-ms="27447">
-      <class name="tests.Buttons">
-        <test-method is-config="true" signature="setup()[pri:0, instance:tests.Buttons@38c6f217]" started-at="2025-08-25T15:52:47 IST" name="setup" finished-at="2025-08-25T15:52:49 IST" duration-ms="1118" status="PASS">
+    <test started-at="2025-08-25T17:56:40 IST" name="Default test" finished-at="2025-08-25T17:57:16 IST" duration-ms="36146">
+      <class name="tests.InputText">
+        <test-method is-config="true" signature="setup()[pri:0, instance:tests.InputText@478190fc]" started-at="2025-08-25T17:56:40 IST" name="setup" finished-at="2025-08-25T17:56:42 IST" duration-ms="1408" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="clickon_Btn()[pri:0, instance:tests.Buttons@38c6f217]" started-at="2025-08-25T15:52:49 IST" name="clickon_Btn" finished-at="2025-08-25T15:53:14 IST" duration-ms="25471" status="PASS">
+        <test-method signature="EnterTextIn_InputBox()[pri:0, instance:tests.InputText@478190fc]" started-at="2025-08-25T17:56:42 IST" name="EnterTextIn_InputBox" finished-at="2025-08-25T17:57:16 IST" duration-ms="34157" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- clickon_Btn -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.Buttons@38c6f217]" started-at="2025-08-25T15:53:14 IST" name="tearDown" finished-at="2025-08-25T15:53:15 IST" duration-ms="550" status="PASS">
+        </test-method> <!-- EnterTextIn_InputBox -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.InputText@478190fc]" started-at="2025-08-25T17:57:16 IST" name="tearDown" finished-at="2025-08-25T17:57:16 IST" duration-ms="227" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-      </class> <!-- tests.Buttons -->
-    </test> <!-- WebElementsTests -->
-  </suite> <!-- WebElementsDemoSuite -->
+      </class> <!-- tests.InputText -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
 </testng-results>
