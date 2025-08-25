@@ -21,14 +21,11 @@
 - Screenshots are saved in `/extent-reports/screenshots/`
 
 ### 4. Covered Test Cases
-- ✅ Login (valid/invalid)  
-- ✅ Checkbox  
-- ✅ Dropdown  
-- ✅ Alerts  
-- ✅ Frames  
-- ✅ File Upload  
-- ✅ File Download  
-- ✅ Table Data  
-- ✅ Waits (Explicit, Fluent)  
+- Login (valid/invalid)  
+- Checkbox  
+- Dropdown  
+- Button  
+- clicklink
+- RadioButton  
 
-Enjoy practicing! 🎯
+
