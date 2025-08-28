@@ -15,7 +15,8 @@ public class ScreenshotUtils {
         String destPath = System.getProperty("user.dir") + "/extent-reports/screenshots/" + testName + ".png";
         try {
             Files.createDirectories(Paths.get(System.getProperty("user.dir") + "/extent-reports/screenshots/"));
-            Files.copy(srcFile.toPath(), Paths.get(destPath));
+            //Files.copy(srcFile.toPath(), Paths.get(destPath));
+            Files.copy(srcFile.toPath(), Paths.get(destPath), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
