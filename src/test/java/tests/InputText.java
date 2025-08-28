@@ -40,6 +40,7 @@ public class InputText extends BaseTest
 		
 		WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
         Assert.assertTrue(successMsg.getText().contains("Vikas"));
+        Thread.sleep(20000);
 	}
 
 }
