@@ -27,7 +27,7 @@ public class BaseTest {
 
 */
 
-package base;
+/*package base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -58,4 +58,66 @@ public class BaseTest {
         if (driver != null) driver.quit();
         ExtentManager.flushReports();  // flush after each test
     }
+} */
+
+package base;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
+
+import com.aventstack.extentreports.ExtentTest;
+import utils.ExtentManager;
+
+import java.lang.reflect.Method;
+import java.time.Duration;
+
+@Listeners(listeners.TestListener.class)
+public class BaseTest {
+
+    //protected WebDriver driver;
+	public WebDriver driver;
+
+    @BeforeSuite(alwaysRun = true)
+    public void beforeSuite() {
+        ExtentManager.initReports(); // Initialize report once
+    }
+
+    @BeforeMethod(alwaysRun = true)
+    public void setup(Method method) {
+        // Initialize WebDriver
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().window().maximize();
+
+        // Create Extent test with the method name
+        ExtentManager.createTest(method.getName());
+        ExtentManager.getExtentTest().info("Starting test: " + method.getName());
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void tearDown(ITestResult result) {
+       ExtentTest test = ExtentManager.getExtentTest();
+    	//ExtentTest test = ExtentManager.getTest();
+        // Log test result
+        if (result.getStatus() == ITestResult.FAILURE) {
+            test.fail("Test FAILED: " + result.getThrowable().getMessage());
+        } else if (result.getStatus() == ITestResult.SUCCESS) {
+            test.pass("Test PASSED");
+        } else if (result.getStatus() == ITestResult.SKIP) {
+            test.skip("Test SKIPPED: " + result.getThrowable().getMessage());
+        }
+
+        // Quit driver
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    @AfterSuite(alwaysRun = true)
+    public void afterSuite() {
+        ExtentManager.flushReports(); // Write all logs to HTML
+    }
 }
+

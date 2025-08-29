@@ -15,12 +15,15 @@ public class ReadDataFormCSV {
             // Read CSV with header
             Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
             for (CSVRecord r : records) {
-                // Include URL, username, password
+                // Include URL, username, password, input text
                 String url = r.get("url");
                 String username = r.get("username");
                 String password = r.get("password");
-
-                rows.add(new String[]{url, username, password});
+                String input_text=r.get("input_text");
+                String targetYear = r.get("targetYear");
+                String targetMonth = r.get("targetMonth");
+                String targetDay=r.get("targetDay");
+                rows.add(new String[]{url, username, password, input_text, targetYear, targetMonth, targetDay});
             }
         } catch (Exception e) {
             e.printStackTrace();
