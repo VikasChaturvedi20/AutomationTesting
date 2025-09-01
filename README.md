@@ -30,5 +30,10 @@
 - Window Swtich
 - Window Tab
 - Impelemented the data read from csv like url, username, passwords.
+- Auto-suggest Dropdown & Static Web Table
+- Dynamic Web Table, Pagination
+- Date picker
+- Mouse Actions, Action vs Actions
+- Keyboard actions
 
 
