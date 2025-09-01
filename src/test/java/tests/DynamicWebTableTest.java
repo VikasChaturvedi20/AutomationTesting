@@ -8,7 +8,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import base.BaseTest;
-import utils.ExtentManager;
+import listeners.TestListener;
+import reports.ExtentManager;
 import utils.ReadDataFormCSV;
 
 public class DynamicWebTableTest extends BaseTest {
@@ -25,7 +26,7 @@ public class DynamicWebTableTest extends BaseTest {
                 if (url.contains("expandtesting")) {
                     driver.get(url);
 
-                    ExtentManager.getExtentTest().info("Navigated to URL: " + url);
+                   TestListener.getTest().info("Navigated to URL: " + url);
 
                     // Locate the dynamic table
                     WebElement table = driver.findElement(By.cssSelector("table.table-striped"));
@@ -67,7 +68,7 @@ public class DynamicWebTableTest extends BaseTest {
                             "CPU value mismatch between table and label");
                 }
             } catch (Exception e) {
-                ExtentManager.getExtentTest().fail("Test failed for URL: " + url + " | Error: " + e.getMessage());
+               TestListener.getTest().fail("Test failed for URL: " + url + " | Error: " + e.getMessage());
                 throw e;
             }
         }

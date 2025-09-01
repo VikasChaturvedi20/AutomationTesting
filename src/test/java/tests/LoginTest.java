@@ -22,12 +22,14 @@ public class LoginTest extends BaseTest {
 package tests;
 
 import base.BaseTest;
+import listeners.TestListener;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import utils.ReadDataFormCSV;
-import utils.ExtentManager;
+import reports.ExtentManager;
 import com.aventstack.extentreports.ExtentTest;
 
 import java.util.List;
@@ -37,7 +39,7 @@ public class LoginTest extends BaseTest {
     @Test
     public void validLogin() {
         // Get ExtentTest instance
-        ExtentTest test = ExtentManager.getExtentTest();
+        ExtentTest test =TestListener.getTest();
 
         // Read data from CSV
         List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
@@ -50,33 +52,33 @@ public class LoginTest extends BaseTest {
             try {
                 // Navigate to URL
                 driver.get(url);
-                test.info("Navigated to URL: " + url);
+                TestListener.getTest().info("Navigated to URL: " + url);
 
                 // Enter username
                 driver.findElement(By.id("user-name")).clear();
                 driver.findElement(By.id("user-name")).sendKeys(username);
-                test.info("Entered username: " + username);
+                TestListener.getTest().info("Entered username: " + username);
                  Thread.sleep(5000);
                 // Enter password
                 driver.findElement(By.id("password")).clear();
                 driver.findElement(By.id("password")).sendKeys(password);
-                test.info("Entered password: " + password);
+                TestListener.getTest().info("Entered password: " + password);
                 Thread.sleep(5000);
                 // Click login
                 driver.findElement(By.id("login-button")).click();
-                test.info("Clicked on Login button");
+                TestListener.getTest().info("Clicked on Login button");
                 Thread.sleep(5000);
                 // Validate login
                 WebElement successMsg = driver.findElement(By.xpath("//span[text()='Products']"));
                 Assert.assertTrue(successMsg.getText().contains("Products"));
-                test.pass("Login successful for user: " + username);
+                TestListener.getTest().pass("Login successful for user: " + username);
 
                 // Optional: logout for next iteration if app supports it
                 // driver.findElement(By.id("logout-button")).click();
                 // test.info("Logged out user: " + username);
 
             } catch (Exception e) {
-                test.fail("Login failed for user: " + username + " - " + e.getMessage());
+            	TestListener.getTest().fail("Login failed for user: " + username + " - " + e.getMessage());
                 Assert.fail("Login failed for user: " + username, e);
             }
         }

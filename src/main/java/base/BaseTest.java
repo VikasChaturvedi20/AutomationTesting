@@ -60,7 +60,7 @@ public class BaseTest {
     }
 } */
 
-package base;
+/*package base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -119,5 +119,72 @@ public class BaseTest {
     public void afterSuite() {
         ExtentManager.flushReports(); // Write all logs to HTML
     }
+}  */
+
+/*package base;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.*;
+
+import utils.ExtentManager;
+
+import java.lang.reflect.Method;
+
+@Listeners(listeners.TestListener.class)
+public class BaseTest {
+    public WebDriver driver;
+
+    @BeforeSuite
+    public void beforeSuite() {
+        ExtentManager.initReports();
+    }
+
+    @BeforeMethod
+    public void setUp(Method method) {
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+
+        // Create a test node in ExtentReport for each test method
+        ExtentManager.createTest(method.getName());
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    @AfterSuite
+    public void afterSuite() {
+        ExtentManager.flushReports();
+    }
 }
 
+
+*/
+
+package base;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.*;
+
+@Listeners(listeners.TestListener.class)
+public class BaseTest {
+    public WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}

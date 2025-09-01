@@ -15,7 +15,8 @@ import org.testng.annotations.Test;
 import com.aventstack.extentreports.ExtentTest;
 
 import base.BaseTest;
-import utils.ExtentManager;
+import listeners.TestListener;
+import reports.ExtentManager;
 import utils.ReadDataFormCSV;
 
 import java.time.Duration;
@@ -27,7 +28,7 @@ public class StaticWebTableTest extends BaseTest {
 	@Test
 	public void handleStaticWebTable() {
 	   
-	     ExtentTest test = ExtentManager.getExtentTest();
+	     ExtentTest test =TestListener.getTest();
 
 	    List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
 
@@ -37,7 +38,7 @@ public class StaticWebTableTest extends BaseTest {
 	        try {
 	            if (url.contains("testautomationpractice")) {
 	                driver.get(url);
-	                ExtentManager.getExtentTest().info("Navigated to URL: " + url);
+	               TestListener.getTest().info("Navigated to URL: " + url);
 
 	                scrollByPixels(0, 1500);
 	                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -46,17 +47,17 @@ public class StaticWebTableTest extends BaseTest {
 	                WebElement table = wait.until(ExpectedConditions
 	                        .visibilityOfElementLocated(By.cssSelector("table[name='BookTable']")));
 
-	                ExtentManager.getExtentTest().info("Static Web Table is visible");
+	               TestListener.getTest().info("Static Web Table is visible");
 
 	                List<WebElement> headers = table.findElements(By.cssSelector("tr:nth-of-type(1) th"));
-	                ExtentManager.getExtentTest().info("Number of headers found: " + headers.size());
+	               TestListener.getTest().info("Number of headers found: " + headers.size());
 
 	                for (WebElement header : headers) {
-	                    ExtentManager.getExtentTest().info("Header: " + header.getText());
+	                   TestListener.getTest().info("Header: " + header.getText());
 	                }
 
 	                List<WebElement> rows = table.findElements(By.cssSelector("tr:not(:first-child)"));
-	                ExtentManager.getExtentTest().info("Number of data rows found: " + rows.size());
+	               TestListener.getTest().info("Number of data rows found: " + rows.size());
 
 	                boolean validationPassed = false;
 
@@ -66,12 +67,12 @@ public class StaticWebTableTest extends BaseTest {
 	                    for (WebElement cell : cells) {
 	                        rowData += cell.getText() + " | ";
 	                    }
-	                    ExtentManager.getExtentTest().info("Row " + (i + 1) + ": " + rowData);
+	                   TestListener.getTest().info("Row " + (i + 1) + ": " + rowData);
 
 	                    if (cells.get(0).getText().equalsIgnoreCase("Learn JS") &&
 	                            cells.get(2).getText().equalsIgnoreCase("Javascript")) {
 	                        validationPassed = true;
-	                        ExtentManager.getExtentTest().pass("Row validation passed for 'Learn JS' with subject 'Javascript'");
+	                       TestListener.getTest().pass("Row validation passed for 'Learn JS' with subject 'Javascript'");
 	                        break;
 	                    }
 	                }
@@ -81,7 +82,7 @@ public class StaticWebTableTest extends BaseTest {
 
 	            }
 	        } catch (Exception e) {
-	            ExtentManager.getExtentTest().fail("Failed to validate static web table on: " + url + " - " + e.getMessage());
+	           TestListener.getTest().fail("Failed to validate static web table on: " + url + " - " + e.getMessage());
 	            Assert.fail("User failed to handle static web table on: " + url, e);
 	        }
 	    }

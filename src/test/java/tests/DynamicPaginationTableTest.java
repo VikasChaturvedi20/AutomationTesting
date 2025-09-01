@@ -6,7 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import base.BaseTest;
-import utils.ExtentManager;
+import listeners.TestListener;
+import reports.ExtentManager;
 import utils.ReadDataFormCSV;
 
 public class DynamicPaginationTableTest extends BaseTest {
@@ -21,7 +22,7 @@ public class DynamicPaginationTableTest extends BaseTest {
             try {
                 if (url.contains("dynamic-pagination-table")) {
                     driver.get(url);
-                    ExtentManager.getExtentTest().info("Navigated to URL: " + url);
+                   TestListener.getTest().info("Navigated to URL: " + url);
 
                     String targetName = "Airi Satou";   // example person to search in table
                     String expectedOffice = "Tokyo";    // expected value
@@ -37,7 +38,7 @@ public class DynamicPaginationTableTest extends BaseTest {
                             List<WebElement> cols = r.findElements(By.cssSelector("td"));
                             if (cols.size() > 0 && cols.get(0).getText().equalsIgnoreCase(targetName)) {
                                 String officeValue = cols.get(2).getText();
-                                ExtentManager.getExtentTest().pass("Found " + targetName + " with office: " + officeValue);
+                               TestListener.getTest().pass("Found " + targetName + " with office: " + officeValue);
                                 Assert.assertEquals(officeValue, expectedOffice, "Office location mismatch!");
                                 recordFound = true;
                                 break;
@@ -49,7 +50,7 @@ public class DynamicPaginationTableTest extends BaseTest {
                         // Move to next page if available
                         WebElement nextBtn = driver.findElement(By.cssSelector("#example_next"));
                         if (nextBtn.getAttribute("class").contains("disabled")) {
-                            ExtentManager.getExtentTest().fail("Record not found after checking all pages");
+                           TestListener.getTest().fail("Record not found after checking all pages");
                             break; // no more pages
                         }
                         nextBtn.click();
@@ -59,7 +60,7 @@ public class DynamicPaginationTableTest extends BaseTest {
                     Assert.assertTrue(recordFound, "Target record not found in paginated table");
                 }
             } catch (Exception e) {
-                ExtentManager.getExtentTest().fail("Exception occurred: " + e.getMessage());
+               TestListener.getTest().fail("Exception occurred: " + e.getMessage());
             }
         }
     }

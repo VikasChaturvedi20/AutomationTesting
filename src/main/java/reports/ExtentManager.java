@@ -17,6 +17,10 @@ public class ExtentManager {
             extent.attachReporter(reporter);
             extent.setSystemInfo("Tester", "Vikas Chaturvedi");
             extent.setSystemInfo("Browser", "Chrome");
+            extent.setSystemInfo("Testing Environment", "QA");  // change to Dev/Prod if needed
+            extent.setSystemInfo("Operating System", System.getProperty("os.name"));
+            extent.setSystemInfo("OS Version", System.getProperty("os.version"));
+            extent.setSystemInfo("Java Version", System.getProperty("java.version"));
         }
         return extent;
     }

@@ -20,7 +20,7 @@ public class GoogleSearch_AutoSuggestionDropdown extends BaseTest {
 	@Test
 	public void AutoSuggestion_DropDown() {
 		// Get ExtentTest instance
-		ExtentTest test = ExtentManager.getExtentTest();
+		ExtentTest test =TestListener.getTest();
 
 		// Read data from CSV
 		List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
@@ -107,7 +107,7 @@ public class GoogleSearch_AutoSuggestionDropdown extends BaseTest {
 
 	@Test
 	public void AutoSuggestion_DropDown() {
-		ExtentTest test = ExtentManager.getExtentTest();
+		ExtentTest test =TestListener.getTest();
 
 		List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
 
@@ -186,7 +186,8 @@ import org.testng.annotations.Test;
 import com.aventstack.extentreports.ExtentTest;
 
 import base.BaseTest;
-import utils.ExtentManager;
+import listeners.TestListener;
+import reports.ExtentManager;
 import utils.ReadDataFormCSV;
 
 import java.time.Duration;
@@ -195,7 +196,7 @@ public class GoogleSearch_AutoSuggestionDropdown extends BaseTest {
 
     @Test
     public void AutoSuggestion_DropDown() {
-        ExtentTest test = ExtentManager.getExtentTest();
+        ExtentTest test =TestListener.getTest();
 
         List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
 

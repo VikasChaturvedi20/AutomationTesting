@@ -11,7 +11,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import base.BaseTest;
-import utils.ExtentManager;
+import listeners.TestListener;
+import reports.ExtentManager;
 import utils.ReadDataFormCSV;
 
 public class JQueryUIDatepickerTest extends BaseTest {
@@ -29,7 +30,7 @@ public class JQueryUIDatepickerTest extends BaseTest {
             try {
                 if (url.contains("datepicker")) {
                     driver.get(url);
-                    ExtentManager.getExtentTest().info("Navigated to URL: " + url);
+                   TestListener.getTest().info("Navigated to URL: " + url);
 
                     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -79,7 +80,7 @@ public class JQueryUIDatepickerTest extends BaseTest {
                     driver.switchTo().defaultContent();
                     String pickedDate = dateInput.getAttribute("value");
 
-                    ExtentManager.getExtentTest().info("Picked Date: " + pickedDate);
+                   TestListener.getTest().info("Picked Date: " + pickedDate);
                     System.out.println("Picked Date: " + pickedDate);
 
                     Assert.assertTrue(pickedDate.contains(targetDay),
@@ -94,7 +95,7 @@ public class JQueryUIDatepickerTest extends BaseTest {
                     WebElement dateInputOutside = driver.findElement(By.id("datepicker"));
                     String pickedDate = dateInputOutside.getAttribute("value");
 
-                    ExtentManager.getExtentTest().info("Picked Date: " + pickedDate);
+                   TestListener.getTest().info("Picked Date: " + pickedDate);
                     System.out.println("Picked Date: " + pickedDate);
 
                     Assert.assertTrue(pickedDate.contains(targetDay),
@@ -102,7 +103,7 @@ public class JQueryUIDatepickerTest extends BaseTest {
 
                 }
             } catch (Exception e) {
-                ExtentManager.getExtentTest().fail("Test failed for URL: " + url + " due to: " + e.getMessage());
+               TestListener.getTest().fail("Test failed for URL: " + url + " due to: " + e.getMessage());
                 Assert.fail("Exception occurred: " + e.getMessage());
             }
         }
