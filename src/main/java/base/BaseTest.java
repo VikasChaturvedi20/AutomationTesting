@@ -165,7 +165,7 @@ public class BaseTest {
 
 */
 
-package base;
+/*package base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -179,6 +179,64 @@ public class BaseTest {
     public void setUp() {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+*/
+
+package base;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.testng.annotations.*;
+import listeners.TestListener;
+import utils.ConfigReader;
+
+@Listeners(TestListener.class)
+public class BaseTest {
+    public WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        String browserName = ConfigReader.get("browser"); // get browser from config
+
+        switch (browserName.toLowerCase()) {
+            case "chrome":
+                WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver();
+                break;
+
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                driver = new FirefoxDriver();
+                break;
+
+            case "ie":
+                WebDriverManager.iedriver().setup();
+                driver = new InternetExplorerDriver();
+                break;
+
+            case "edge":
+                WebDriverManager.edgedriver().setup();
+                driver = new EdgeDriver();
+                break;
+
+            default:
+                throw new IllegalArgumentException("Browser not supported: " + browserName);
+        }
+
+        driver.manage().window().maximize();
+        //driver.get(ConfigReader.get("url")); // launch URL from config
     }
 
     @AfterMethod
