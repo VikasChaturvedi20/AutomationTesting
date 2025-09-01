@@ -35,5 +35,8 @@
 - Date picker
 - Mouse Actions, Action vs Actions
 - Keyboard actions
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8580173 (Save local changes before pull)
