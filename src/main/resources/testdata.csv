@@ -1,6 +1,6 @@
 url,username,password,input_text,targetYear,targetMonth,targetDay
 https://www.saucedemo.com/,standard_user,secret_sauce,,,,
-https://www.saucedemo.com/,locked_out_user,secret_sauce,,,,
+https://www.saucedemo.com/,problem_user,secret_sauce,,,,
 http://www.google.com,,,selenium,,,
 https://playwright.dev/,,,Parameterize tests,,,
 https://testautomationpractice.blogspot.com/,,,,,,
