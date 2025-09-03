@@ -336,7 +336,7 @@ public class BaseTest {
 
 */
 
-package base;
+/*package base;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -421,6 +421,194 @@ public class BaseTest {
     public void tearDown() {
         if (driver != null) {
             driver.quit();
+        }
+    }
+}
+
+
+*/
+
+/*package base;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.*;
+import listeners.TestListener;
+import utils.ConfigReader;
+
+@Listeners(TestListener.class)
+public class BaseTest {
+
+    // Thread-safe driver
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+
+    public static WebDriver getDriver() {
+        return driver.get();
+    }
+
+    @Parameters({"browser", "headless"})
+    @BeforeMethod
+    public void setUp(@Optional("") String browserParam,
+                      @Optional("") String headlessParam) {
+
+        String browserName = browserParam.isEmpty() ? ConfigReader.get("browser") : browserParam;
+        String headless = headlessParam.isEmpty() ? ConfigReader.get("headless") : headlessParam;
+
+        System.out.println("Browser: " + browserName + " | Headless flag: " + headless);
+
+        boolean isHeadless = "true".equalsIgnoreCase(headless);
+        WebDriver localDriver;
+
+        switch (browserName.toLowerCase()) {
+            case "chrome":
+                WebDriverManager.chromedriver().setup();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                if (isHeadless) {
+                    chromeOptions.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080");
+                }
+                localDriver = new ChromeDriver(chromeOptions);
+                break;
+
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                if (isHeadless) {
+                    firefoxOptions.addArguments("--headless", "--width=1920", "--height=1080");
+                }
+                localDriver = new FirefoxDriver(firefoxOptions);
+                break;
+
+            case "ie":
+                WebDriverManager.iedriver().setup();
+                localDriver = new InternetExplorerDriver();
+                break;
+
+            case "edge":
+                WebDriverManager.edgedriver().setup();
+                localDriver = new EdgeDriver();
+                break;
+
+            default:
+                throw new IllegalArgumentException("Browser not supported: " + browserName);
+        }
+
+        driver.set(localDriver);
+
+        if (!isHeadless) {
+            getDriver().manage().window().maximize();
+        }
+
+        System.out.println("Final Capabilities: " + ((RemoteWebDriver) getDriver()).getCapabilities());
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (getDriver() != null) {
+            getDriver().quit();
+            driver.remove();
+        }
+    }
+}
+*/
+
+package base;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.*;
+import listeners.TestListener;
+import utils.ConfigReader;
+
+@Listeners(TestListener.class)
+public class BaseTest {
+
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+
+    public static WebDriver getDriver() {
+        return driver.get();
+    }
+
+    public static void setDriver(WebDriver driverInstance) {
+        driver.set(driverInstance);
+    }
+
+    public static void removeDriver() {
+        driver.remove();
+    }
+
+    @Parameters({"browser", "headless"})
+    @BeforeMethod(alwaysRun = true)
+    public void setUp(@Optional("") String browserParam,
+                      @Optional("") String headlessParam) {
+        String browserName = browserParam.isEmpty() ? ConfigReader.get("browser") : browserParam;
+        String headless = headlessParam.isEmpty() ? ConfigReader.get("headless") : headlessParam;
+
+        System.out.println("Browser: " + browserName + " | Headless flag: " + headless);
+
+        boolean isHeadless = "true".equalsIgnoreCase(headless);
+        WebDriver localDriver;
+
+        switch (browserName.toLowerCase()) {
+            case "chrome":
+                WebDriverManager.chromedriver().setup();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                if (isHeadless) {
+                    chromeOptions.addArguments("--headless=new", "--disable-gpu", "--window-size=1920,1080");
+                }
+                localDriver = new ChromeDriver(chromeOptions);
+                break;
+
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                if (isHeadless) {
+                    firefoxOptions.addArguments("--headless", "--width=1920", "--height=1080");
+                }
+                localDriver = new FirefoxDriver(firefoxOptions);
+                break;
+
+            case "ie":
+                WebDriverManager.iedriver().setup();
+                localDriver = new InternetExplorerDriver();
+                break;
+
+            case "edge":
+                WebDriverManager.edgedriver().setup();
+                localDriver = new EdgeDriver();
+                break;
+
+            default:
+                throw new IllegalArgumentException("Browser not supported: " + browserName);
+        }
+
+        setDriver(localDriver);
+
+        if (!isHeadless) {
+            getDriver().manage().window().maximize();
+        }
+
+        System.out.println("Final Capabilities: " + ((RemoteWebDriver) getDriver()).getCapabilities());
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void tearDown() {
+        if (getDriver() != null) {
+            getDriver().quit();
+            removeDriver();
         }
     }
 }

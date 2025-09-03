@@ -1,32 +1,34 @@
 package tests;
 
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import base.BaseTest;
 import listeners.TestListener;
-import reports.ExtentManager;
 import utils.ReadDataFormCSV;
 
 public class DynamicWebTableTest extends BaseTest {
 
     @Test
-    public void verifyChromeCpuLoad() {
-        // Read URLs from CSV
-        List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
+    @Parameters("csvFilePath")
+    public void verifyChromeCpuLoad(String csvFilePath) {
+        WebDriver driver = getDriver();
+        List<Map<String, String>> data = ReadDataFormCSV.read(csvFilePath);
 
-        for (String[] row : data) {
-            String url = row[0];
+        for (Map<String, String> row : data) {
+            String url = row.get("url");  // using header name from CSV
 
             try {
                 if (url.contains("expandtesting")) {
                     driver.get(url);
-
-                   TestListener.getTest().info("Navigated to URL: " + url);
+                    TestListener.getTest().info("Navigated to URL: " + url);
 
                     // Locate the dynamic table
                     WebElement table = driver.findElement(By.cssSelector("table.table-striped"));
@@ -60,16 +62,18 @@ public class DynamicWebTableTest extends BaseTest {
                     String labelText = label.getText().trim(); // "Chrome CPU: 7.9%"
                     String cpuValueFromLabel = labelText.split(":")[1].trim();
 
-                    System.out.println("CPU from table  : " + cpuValueFromTable);
-                    System.out.println("CPU from label : " + cpuValueFromLabel);
+                    TestListener.getTest().info("CPU from table: " + cpuValueFromTable);
+                    TestListener.getTest().info("CPU from label: " + cpuValueFromLabel);
 
                     // Final validation
                     Assert.assertEquals(cpuValueFromTable, cpuValueFromLabel,
                             "CPU value mismatch between table and label");
+
+                    TestListener.getTest().pass("Chrome CPU values matched successfully for URL: " + url);
                 }
             } catch (Exception e) {
-               TestListener.getTest().fail("Test failed for URL: " + url + " | Error: " + e.getMessage());
-                throw e;
+                TestListener.getTest().fail("Test failed for URL: " + url + " | Error: " + e.getMessage());
+                Assert.fail("Test failed for URL: " + url, e);
             }
         }
     }

@@ -1,128 +1,100 @@
 package tests;
 
-import java.time.Duration;
-import java.util.List;
-
+import base.BaseTest;
+import listeners.TestListener;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-
-import base.BaseTest;
-import listeners.TestListener;
-import reports.ExtentManager;
 import utils.ReadDataFormCSV;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 public class KeyboardActionsTest extends BaseTest {
 
-	@Test
-	public void testKeyboardActions() {
-		List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
+    @Test
+    @Parameters("csvFilePath")
+    public void testKeyboardActions(String csvFilePath) throws InterruptedException {
+        WebDriver driver = getDriver();
+        List<Map<String, String>> data = ReadDataFormCSV.read(csvFilePath);
 
-		for (String[] row : data) {
-			String url = row[0];
-			String input_text = row[3];
+        for (Map<String, String> row : data) {
+            String url = row.get("url");
+            String inputText = row.get("input_text");
 
-			try {
-				// driver.get(url);
-				// TestListener.getTest().info("Navigated to URL: " + url);
+            try {
+                driver.get(url);
+                TestListener.getTest().info("Navigated to URL: " + url);
 
-				WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-				Actions actions = new Actions(driver);
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                Actions actions = new Actions(driver);
 
-				// 1.Keyboard: ENTER / BACKSPACE / TAB
-				if (url.contains("key_presses")) {
-					driver.get(url);
-					TestListener.getTest().info("Navigated to URL: " + url);
-					WebElement body = driver.findElement(By.tagName("body"));
-					body.sendKeys(Keys.ENTER);
-					TestListener.getTest().info("Pressed ENTER key");
-					body.sendKeys(Keys.BACK_SPACE);
-					TestListener.getTest().info("Pressed BACKSPACE key");
-					body.sendKeys(Keys.TAB);
-					TestListener.getTest().info("Pressed TAB key");
-				}
+                // 1. Keyboard: ENTER / BACKSPACE / TAB
+                if (url.contains("key_presses")) {
+                    WebElement body = driver.findElement(By.tagName("body"));
+                    body.sendKeys(Keys.ENTER);
+                    TestListener.getTest().info("Pressed ENTER key");
+                    body.sendKeys(Keys.BACK_SPACE);
+                    TestListener.getTest().info("Pressed BACKSPACE key");
+                    body.sendKeys(Keys.TAB);
+                    TestListener.getTest().info("Pressed TAB key");
+                }
 
-				// 2.Keyboard: SHIFT typing (uppercase)
-				else if (url.contains("text-box")) {
-					driver.get(url);
-					TestListener.getTest().info("Navigated to URL: " + url);
-					Thread.sleep(5000);
-					WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userName")));
-					actions.keyDown(Keys.SHIFT).sendKeys(input, input_text).keyUp(Keys.SHIFT).perform();
-					Thread.sleep(5000);
+                // 2. Keyboard: SHIFT typing (uppercase)
+                else if (url.contains("text-box") && row.get("action").equalsIgnoreCase("shift")) {
+                    WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userName")));
+                    actions.keyDown(Keys.SHIFT).sendKeys(input, inputText).keyUp(Keys.SHIFT).perform();
+                    TestListener.getTest().info("Typed '" + inputText.toUpperCase() + "' in uppercase using SHIFT key");
+                }
 
-					/*if (isAlertPresent()) {
-						Alert alert = driver.switchTo().alert();
-						System.out.println("Alert text: " + alert.getText());
-						alert.accept(); // or alert.dismiss()
-						System.out.println("Alert handled");
-					} else {
-						System.out.println("No alert present, moving to next steps...");
-					} */
+                // 3. Keyboard: CTRL+A / CTRL+C / CTRL+V
+                else if (url.contains("text-box") && row.get("action").equalsIgnoreCase("copy-paste")) {
+                    WebElement input1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userName")));
+                    WebElement input2 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userEmail")));
 
-					TestListener.getTest().info("Typed 'VIKAS' in uppercase using SHIFT key");
-				}
+                    input1.sendKeys(inputText);
+                    TestListener.getTest().info("Entered text in InputBox1");
 
-				// 3.Keyboard: CTRL+A / CTRL+C / CTRL+V
-				else if (url.contains("text-box")) 
-				{
-					driver.get(url);
-					TestListener.getTest().info("Navigated to URL: " + url);
-					Thread.sleep(5000);
-					/* if (isAlertPresent()) {
-	                        Alert alert = driver.switchTo().alert();
-	                        System.out.println("Alert text: " + alert.getText());
-	                        alert.accept(); // or alert.dismiss()
-	                        System.out.println("Alert handled");
-	                    } else {
-	                        System.out.println("No alert present, moving to next steps...");
-	                    }  */
-	                    
-					WebElement input1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userName")));
-					WebElement input2 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userEmail")));
+                    // CTRL+A
+                    actions.keyDown(Keys.CONTROL).sendKeys("a").keyUp(Keys.CONTROL).perform();
+                    TestListener.getTest().info("Performed CTRL+A (Select All)");
 
-					input1.sendKeys(input_text);
-					TestListener.getTest().info("Entered text in InputBox1");
+                    // CTRL+C
+                    actions.keyDown(Keys.CONTROL).sendKeys("c").keyUp(Keys.CONTROL).perform();
+                    TestListener.getTest().info("Performed CTRL+C (Copy)");
 
-					// CTRL+A
-					actions.keyDown(Keys.CONTROL).sendKeys("a").keyUp(Keys.CONTROL).perform();
-					TestListener.getTest().info("Performed CTRL+A (Select All)");
+                    // Move to second box and paste
+                    input2.click();
+                    actions.keyDown(Keys.CONTROL).sendKeys("v").keyUp(Keys.CONTROL).perform();
+                    TestListener.getTest().info("Performed CTRL+V (Paste)");
 
-					// CTRL+C
-					actions.keyDown(Keys.CONTROL).sendKeys("c").keyUp(Keys.CONTROL).perform();
-					TestListener.getTest().info("Performed CTRL+C (Copy)");
+                    Assert.assertEquals(input2.getAttribute("value"), inputText.toLowerCase(),
+                            "Copied text is matching!");
+                }
 
-					// Move to second box
-					input2.click();
+            } catch (Exception e) {
+                TestListener.getTest().fail("Keyboard actions failed for URL: " + url + " due to: " + e.getMessage());
+                Assert.fail("Exception occurred: " + e.getMessage(), e);
+            }
+        }
+    }
 
-					// CTRL+V
-					actions.keyDown(Keys.CONTROL).sendKeys("v").keyUp(Keys.CONTROL).perform();
-					TestListener.getTest().info("Performed CTRL+V (Paste)");
-
-					Assert.assertEquals(input2.getAttribute("value"), "vikas",
-							"Copied text is matching!");
-				}
-
-			} catch (Exception e) {
-				TestListener.getTest().fail("Keyboard actions failed for URL: " + url + " due to: " + e.getMessage());
-				Assert.fail("Exception occurred: " + e.getMessage());
-			}
-		}
-	}
-
-	private boolean isAlertPresent() {
-		try {
-			driver.switchTo().alert();
-			return true;
-		} catch (NoAlertPresentException e) {
-			return false;
-		}
-	}
+    private boolean isAlertPresent(WebDriver driver) {
+        try {
+            driver.switchTo().alert();
+            return true;
+        } catch (NoAlertPresentException e) {
+            return false;
+        }
+    }
 }

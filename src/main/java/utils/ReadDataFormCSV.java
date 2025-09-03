@@ -1,4 +1,4 @@
-package utils;
+/*package utils;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -31,3 +31,45 @@ public class ReadDataFormCSV {
         return rows;
     }
 }
+*/
+
+package utils;
+
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+
+public class ReadDataFormCSV {
+
+    public static List<Map<String, String>> read(String path) {
+        List<Map<String, String>> rows = new ArrayList<>();
+        try (Reader in = new FileReader(path)) {
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.builder()
+                    .setHeader()                // use first row as header
+                    .setSkipHeaderRecord(true)  // don't include header in data
+                    .setIgnoreHeaderCase(true)  // case-insensitive header
+                    .setTrim(true)              // remove extra spaces
+                    .build()
+                    .parse(in);
+
+            for (CSVRecord record : records) {
+                Map<String, String> row = new HashMap<>();
+                for (String header : record.toMap().keySet()) {
+                    row.put(header, record.get(header));
+                }
+                rows.add(row);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rows;
+    }
+}
+
+

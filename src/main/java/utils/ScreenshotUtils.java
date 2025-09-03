@@ -169,20 +169,24 @@ public class ScreenshotUtils {
      * Captures a normal viewport screenshot (visible part of the page)
      * @param driver WebDriver instance
      * @param fileName base screenshot file name
-     * @return relative path for Extent Report
+     * @return relative path for Extent Report or null if failed
      */
     public static String captureViewportScreenshot(WebDriver driver, String fileName) {
+        if (driver == null) {
+            System.err.println("[WARN] Skipping viewport screenshot: WebDriver is null.");
+            return null;
+        }
         try {
             File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date());
-            String destPath = System.getProperty("user.dir") + "/" + REPORT_FOLDER + fileName + "_" + timestamp + ".png";
+            String destPath = System.getProperty("user.dir") + "/" + REPORT_FOLDER
+                    + fileName + "_" + timestamp + ".png";
 
             Files.createDirectories(Paths.get(System.getProperty("user.dir") + "/" + REPORT_FOLDER));
             Files.copy(srcFile.toPath(), Paths.get(destPath));
 
             return "./screenshots/" + fileName + "_" + timestamp + ".png";
-
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -193,26 +197,29 @@ public class ScreenshotUtils {
      * Captures a full-page screenshot using AShot (scrolls and stitches)
      * @param driver WebDriver instance
      * @param fileName base screenshot file name
-     * @return relative path for Extent Report
+     * @return relative path for Extent Report or null if failed
      */
     public static String captureFullPageScreenshot(WebDriver driver, String fileName) {
+        if (driver == null) {
+            System.err.println("[WARN] Skipping full-page screenshot: WebDriver is null.");
+            return null;
+        }
         try {
             Screenshot screenshot = new AShot()
-                    .shootingStrategy(ShootingStrategies.viewportPasting(1000)) // scroll timeout 1s
+                    .shootingStrategy(ShootingStrategies.viewportPasting(1000)) // 1s scroll delay
                     .takeScreenshot(driver);
 
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date());
-            String destPath = System.getProperty("user.dir") + "/" + REPORT_FOLDER + fileName + "_" + timestamp + ".png";
+            String destPath = System.getProperty("user.dir") + "/" + REPORT_FOLDER
+                    + fileName + "_" + timestamp + ".png";
 
             Files.createDirectories(Paths.get(System.getProperty("user.dir") + "/" + REPORT_FOLDER));
             ImageIO.write(screenshot.getImage(), "PNG", new File(destPath));
 
             return "./screenshots/" + fileName + "_" + timestamp + ".png";
-
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 }
-

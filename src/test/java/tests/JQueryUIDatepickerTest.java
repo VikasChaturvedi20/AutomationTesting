@@ -1,48 +1,53 @@
 package tests;
 
-import java.time.Duration;
-import java.util.List;
-
+import base.BaseTest;
+import listeners.TestListener;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-
-import base.BaseTest;
-import listeners.TestListener;
-import reports.ExtentManager;
 import utils.ReadDataFormCSV;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 public class JQueryUIDatepickerTest extends BaseTest {
 
     @Test
-    public void selectDateInDatepicker() {
-        List<String[]> data = ReadDataFormCSV.read("src/main/resources/testdata.csv");
+    @Parameters("csvFilePath")
+    public void selectDateInDatepicker(String csvFilePath) {
+        WebDriver driver = getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        for (String[] row : data) {
-            String url = row[0];
-            String targetYear = row[4];
-            String targetMonth = row[5];
-            String targetDay = row[6];
+        List<Map<String, String>> data = ReadDataFormCSV.read(csvFilePath);
+
+        for (Map<String, String> row : data) {
+            String url = row.get("url");
+            String targetYear = row.get("year");
+            String targetMonth = row.get("month");
+            String targetDay = row.get("day");
 
             try {
                 if (url.contains("datepicker")) {
                     driver.get(url);
-                   TestListener.getTest().info("Navigated to URL: " + url);
-
-                    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                    TestListener.getTest().info("Navigated to URL: " + url);
 
                     // Switch to iframe
-                    WebElement iframe = driver.findElement(By.cssSelector(".demo-frame"));
+                    WebElement iframe = wait.until(ExpectedConditions.presenceOfElementLocated(
+                            By.cssSelector(".demo-frame")));
                     driver.switchTo().frame(iframe);
 
                     // Open the datepicker input
-                    WebElement dateInput = wait.until(ExpectedConditions.elementToBeClickable(By.id("datepicker")));
+                    WebElement dateInput = wait.until(
+                            ExpectedConditions.elementToBeClickable(By.id("datepicker")));
                     dateInput.click();
 
-                    // Navigate to target month & year (forward or backward)
+                    // Navigate until we reach target month/year
                     while (true) {
                         WebElement monthElement = driver.findElement(By.className("ui-datepicker-month"));
                         WebElement yearElement = driver.findElement(By.className("ui-datepicker-year"));
@@ -54,12 +59,12 @@ public class JQueryUIDatepickerTest extends BaseTest {
                             break;
                         }
 
-                        // Compare years & months
                         int currYear = Integer.parseInt(currentYear);
                         int targYear = Integer.parseInt(targetYear);
 
-                        if (currYear > targYear || 
-                           (currYear == targYear && getMonthNumber(currentMonth) > getMonthNumber(targetMonth))) {
+                        if (currYear > targYear ||
+                                (currYear == targYear &&
+                                        getMonthNumber(currentMonth) > getMonthNumber(targetMonth))) {
                             // Go back in time
                             driver.findElement(By.cssSelector(".ui-datepicker-prev")).click();
                         } else {
@@ -70,46 +75,32 @@ public class JQueryUIDatepickerTest extends BaseTest {
                         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".ui-datepicker-title")));
                     }
 
-                    // Select the day
+                    // Select target day
                     WebElement dayCell = driver.findElement(By.xpath(
-                        "//td[not(contains(@class,'ui-datepicker-other-month'))]/a[text()='" + targetDay + "']"
-                    ));
-                   /* dayCell.click();
-
-                    // Exit iframe & validate
-                    driver.switchTo().defaultContent();
-                    String pickedDate = dateInput.getAttribute("value");
-
-                   TestListener.getTest().info("Picked Date: " + pickedDate);
-                    System.out.println("Picked Date: " + pickedDate);
-
-                    Assert.assertTrue(pickedDate.contains(targetDay),
-                            "Incorrect date selected!"); */
-                 // After selecting the day
+                            "//td[not(contains(@class,'ui-datepicker-other-month'))]/a[text()='" + targetDay + "']"));
                     dayCell.click();
 
-                    // Exit iframe & validate
+                    // Exit iframe
                     driver.switchTo().defaultContent();
 
-                    // Re-locate the input again
+                    // Re-locate input outside iframe
                     WebElement dateInputOutside = driver.findElement(By.id("datepicker"));
                     String pickedDate = dateInputOutside.getAttribute("value");
 
-                   TestListener.getTest().info("Picked Date: " + pickedDate);
-                    System.out.println("Picked Date: " + pickedDate);
-
+                    TestListener.getTest().info("Picked Date: " + pickedDate);
                     Assert.assertTrue(pickedDate.contains(targetDay),
                             "Incorrect date selected! Expected: " + targetDay + " but got: " + pickedDate);
 
+                    TestListener.getTest().pass("Date successfully selected: " + pickedDate);
                 }
             } catch (Exception e) {
-               TestListener.getTest().fail("Test failed for URL: " + url + " due to: " + e.getMessage());
-                Assert.fail("Exception occurred: " + e.getMessage());
+                TestListener.getTest().fail("Test failed for URL: " + url + " due to: " + e.getMessage());
+                Assert.fail("Exception occurred for URL: " + url, e);
             }
         }
     }
 
-    // Helper to convert month name → number
+    // Helper: convert month name to number
     private int getMonthNumber(String monthName) {
         switch (monthName) {
             case "January": return 1;
