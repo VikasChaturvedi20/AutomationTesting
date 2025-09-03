@@ -35,8 +35,17 @@
 - Date picker
 - Mouse Actions, Action vs Actions
 - Keyboard actions
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 8580173 (Save local changes before pull)
+- Handle sliders, Tab & windows
+- Javascript executor, scrolling page, upload files 
+- handling broken links, SVG element, shadow DOM
+- WebdriverManager
+- Types Of Assertions
+- TestNG Listners
+- Headless Browser Testing (Chrome, Firefox in headless mode)
+- Parallel Test Execution TestNG 
+- Remote WebDriver & Selenium Grid (running tests on multiple machines)
+- Cross Browser Testing (Chrome, Firefox, Edge, Safari)
+- Handling Cookies & Session Storage (add/delete cookies, maintain session)
+- Taking Full Page Screenshots (not just visible viewport)
+- WebDriverWait with Custom ExpectedConditions
+- Pom (Page Object Model), Approches to create page object class
