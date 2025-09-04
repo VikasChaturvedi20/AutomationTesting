@@ -1,8 +1,7 @@
 package pages;
 
-import org.openqa.selenium.By;
+import locators.AllLocators;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -12,30 +11,30 @@ public class FileUploadPage {
 
     private WebDriver driver;
     private WebDriverWait wait;
-
-    // Locators
-    private By fileUploadInput = By.cssSelector("#file-upload");
-    private By uploadButton = By.cssSelector("#file-submit");
-    private By uploadedFilesText = By.cssSelector("#uploaded-files");
+    private AllLocators locators;
 
     // Constructor
-    public FileUploadPage(WebDriver driver) {
+    public FileUploadPage(WebDriver driver, AllLocators locators) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.locators = locators;
     }
 
     // Actions
     public void uploadFile(String filePath) {
-        WebElement uploadInput = wait.until(ExpectedConditions.presenceOfElementLocated(fileUploadInput));
-        uploadInput.sendKeys(filePath);
+        wait.until(ExpectedConditions.visibilityOf(locators.fileUploadInput)).sendKeys(filePath);
     }
 
     public void clickUploadButton() {
-        WebElement uploadBtn = wait.until(ExpectedConditions.elementToBeClickable(uploadButton));
-        uploadBtn.click();
+        wait.until(ExpectedConditions.elementToBeClickable(locators.uploadButton)).click();
     }
 
     public String getUploadedFileName() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(uploadedFilesText)).getText();
+        return wait.until(ExpectedConditions.visibilityOf(locators.uploadedFilesText)).getText();
     }
+    
+    public String getHeadingText() {
+        return wait.until(ExpectedConditions.visibilityOf(locators.fileUploadHeading)).getText();
+    }
+
 }

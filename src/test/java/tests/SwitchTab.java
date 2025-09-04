@@ -1,48 +1,59 @@
 package tests;
 
 import java.time.Duration;
-
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import base.BaseTest;
+import listeners.TestListener;
 
-public class SwitchTab extends BaseTest
-{
-	@Test
-	public void Switch_to_Tab() {
-		try {
-			driver.get("https://rahulshettyacademy.com/AutomationPractice/");
-			driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-			
-			String ParentTab= driver.getWindowHandle();
+public class SwitchTab extends BaseTest {
 
-			WebElement ClickOnNewTab_btn = driver.findElement(By.id("opentab"));
-			ClickOnNewTab_btn.click();
+    @Test
+    public void switchToNewTab() {
+        WebDriver driver = getDriver(); // ✅ ThreadLocal driver
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-			for (String handle : driver.getWindowHandles()) {
-		        if (!handle.equals(ParentTab)) {
-		            driver.switchTo().window(handle);
-		            break;
-		        }
-		    }
-             Thread.sleep(7000);
-		    // Now you are in new tab
-		    System.out.println("New Tab Title: " + driver.getTitle());
+        try {
+            driver.get("https://rahulshettyacademy.com/AutomationPractice/");
+            TestListener.getTest().info("Navigated to Automation Practice URL");
 
-		    // Do assertions in the new tab
-		    Assert.assertTrue(driver.getTitle().contains("QAClick Academy - A Testing Academy to Learn, Earn and Shine"), "QAClick Academy - A Testing Academy to Learn, Earn and Shine");
+            String parentTab = driver.getWindowHandle();
 
+            WebElement newTabButton = wait.until(
+                    ExpectedConditions.elementToBeClickable(By.id("opentab")));
+            newTabButton.click();
+            TestListener.getTest().info("Clicked on 'Open Tab' button");
 
-		} 
-		catch (Exception e) 
-		{
-			// TODO: handle exception
-			System.out.println("Exception Occured during New Window Switch:"+e.getMessage());
-		}
+            // Switch to new tab
+            for (String handle : driver.getWindowHandles()) {
+                if (!handle.equals(parentTab)) {
+                    driver.switchTo().window(handle);
+                    break;
+                }
+            }
 
-	}
+            // Optional wait to ensure page loads
+            wait.until(ExpectedConditions.titleContains("QAClick Academy"));
+            TestListener.getTest().info("Switched to new tab: " + driver.getTitle());
 
+            // Validation
+            Assert.assertTrue(driver.getTitle().contains(
+                    "QAClick Academy - A Testing Academy to Learn, Earn and Shine"),
+                    "Title mismatch in new tab");
+            TestListener.getTest().pass("New tab opened and validated successfully");
+
+            // Switch back to parent tab if needed
+            driver.switchTo().window(parentTab);
+            TestListener.getTest().info("Switched back to parent tab");
+
+        } catch (Exception e) {
+            TestListener.getTest().fail("Exception occurred while switching tabs: " + e.getMessage());
+            Assert.fail("Switch tab test failed", e);
+        }
+    }
 }
