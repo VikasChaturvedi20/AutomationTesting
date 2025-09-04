@@ -1,0 +1,10 @@
+Keyword,Element,TestData
+openUrl,,https://the-internet.herokuapp.com/login
+type,usernameInput,tomsmith
+type,passwordInput,SuperSecretPassword!
+click,loginButton,
+verifyText,loginSuccessMsg,You logged into a secure area!
+openUrl,,https://the-internet.herokuapp.com/upload
+uploadFile,fileUploadInput,src/main/resources/sample.txt
+click,uploadButton,
+verifyText,uploadedFilesText,sample.txt
