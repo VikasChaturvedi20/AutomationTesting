@@ -340,7 +340,7 @@ public class TestListener implements ITestListener {
 */
 
 
-package listeners;
+/*package listeners;
 
 import com.aventstack.extentreports.Status;
 import org.openqa.selenium.WebDriver;
@@ -414,6 +414,99 @@ public class TestListener implements ITestListener {
         String fullPagePath = ScreenshotUtils.captureFullPageScreenshot(driver, methodName + "_FullPage");
         if (fullPagePath != null) {
             getTest().log(status, "Full Page Screenshot").addScreenCaptureFromPath(fullPagePath);
+        }
+    }
+}
+*/
+package listeners;
+
+import com.aventstack.extentreports.Status;
+import org.openqa.selenium.WebDriver;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
+import reports.ExtentManager;
+import utils.ScreenshotUtils;
+import base.BaseTest;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.ExtentReports;
+import org.apache.logging.log4j.Logger;
+import utils.LoggerUtil;
+
+public class TestListener implements ITestListener {
+
+    private static final ExtentReports extent = ExtentManager.getInstance();
+    private static final ThreadLocal<ExtentTest> test = new ThreadLocal<>();
+    private static final Logger log = LoggerUtil.getLogger(TestListener.class);
+
+    public static ExtentTest getTest() {
+        return test.get();
+    }
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        ExtentTest extentTest = extent.createTest(result.getMethod().getMethodName());
+        test.set(extentTest);
+
+        String msg = "Starting test: " + result.getMethod().getMethodName();
+        getTest().log(Status.INFO, msg);
+        log.info(msg);
+    }
+
+    @Override
+    public void onTestSuccess(ITestResult result) {
+        WebDriver driver = BaseTest.getDriver();
+        String msg = "Test Passed ✅ : " + result.getMethod().getMethodName();
+        getTest().log(Status.PASS, msg);
+        log.info(msg);
+
+        attachScreenshots(driver, result, Status.PASS);
+    }
+
+    @Override
+    public void onTestFailure(ITestResult result) {
+        WebDriver driver = BaseTest.getDriver();
+        String msg = "Test Failed ❌ : " + result.getMethod().getMethodName();
+        getTest().log(Status.FAIL, msg);
+        getTest().fail(result.getThrowable());
+
+        log.error(msg, result.getThrowable());
+
+        attachScreenshots(driver, result, Status.FAIL);
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        String msg = "Test Skipped ⚠️ : " + result.getMethod().getMethodName();
+        getTest().log(Status.SKIP, msg + " - " + result.getThrowable());
+        log.warn(msg, result.getThrowable());
+    }
+
+    @Override
+    public void onFinish(ITestContext context) {
+        extent.flush();
+        log.info("Test suite finished: " + context.getName());
+    }
+
+    private void attachScreenshots(WebDriver driver, ITestResult result, Status status) {
+        if (driver == null) {
+            getTest().log(Status.WARNING, "WebDriver is null, skipping screenshots.");
+            log.warn("WebDriver is null, skipping screenshots for test: " + result.getMethod().getMethodName());
+            return;
+        }
+
+        String methodName = result.getMethod().getMethodName();
+
+        String viewportPath = ScreenshotUtils.captureViewportScreenshot(driver, methodName + "_Viewport");
+        if (viewportPath != null) {
+            getTest().log(status, "Viewport Screenshot").addScreenCaptureFromPath(viewportPath);
+            log.info("Attached viewport screenshot: {}", viewportPath);
+        }
+
+        String fullPagePath = ScreenshotUtils.captureFullPageScreenshot(driver, methodName + "_FullPage");
+        if (fullPagePath != null) {
+            getTest().log(status, "Full Page Screenshot").addScreenCaptureFromPath(fullPagePath);
+            log.info("Attached full-page screenshot: {}", fullPagePath);
         }
     }
 }

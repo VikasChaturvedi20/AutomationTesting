@@ -34,4 +34,30 @@ public class AllLocators {
     // ================= Dashboard Page Locators (future example) =================
     @FindBy(xpath = "//h1[contains(text(),'Dashboard')]")
     public WebElement dashboardTitle;
+    
+   //============================Handling Captcha=============================== 
+    @FindBy(css = "div.g-recaptcha")
+    public WebElement recaptchaBox;
+
+    @FindBy(css = "button[type='submit']")
+    public WebElement submitButton;
+    
+   //====================== Fake form locators ================================
+    @FindBy(id = "name")
+    public WebElement formNameInput;
+
+    @FindBy(id = "email")
+    public WebElement formEmailInput;
+
+    @FindBy(id = "phone")
+    public WebElement formPhoneInput;
+
+    @FindBy(id = "address")
+    public WebElement formAddressInput;
+
+    @FindBy(id = "submit")
+    public WebElement formSubmitButton;
+
+    @FindBy(id = "confirmation")
+    public WebElement formConfirmationText;
 }

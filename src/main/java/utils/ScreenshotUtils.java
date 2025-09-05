@@ -145,7 +145,7 @@ public class ScreenshotUtils {
 
 */
 
-package utils;
+/*package utils;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -171,7 +171,7 @@ public class ScreenshotUtils {
      * @param fileName base screenshot file name
      * @return relative path for Extent Report or null if failed
      */
-    public static String captureViewportScreenshot(WebDriver driver, String fileName) {
+  /*  public static String captureViewportScreenshot(WebDriver driver, String fileName) {
         if (driver == null) {
             System.err.println("[WARN] Skipping viewport screenshot: WebDriver is null.");
             return null;
@@ -199,7 +199,7 @@ public class ScreenshotUtils {
      * @param fileName base screenshot file name
      * @return relative path for Extent Report or null if failed
      */
-    public static String captureFullPageScreenshot(WebDriver driver, String fileName) {
+  /*  public static String captureFullPageScreenshot(WebDriver driver, String fileName) {
         if (driver == null) {
             System.err.println("[WARN] Skipping full-page screenshot: WebDriver is null.");
             return null;
@@ -222,4 +222,80 @@ public class ScreenshotUtils {
             return null;
         }
     }
+} */
+
+package utils;
+
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
+
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.logging.log4j.Logger;
+
+public class ScreenshotUtils {
+
+    private static final Logger log = LoggerUtil.getLogger(ScreenshotUtils.class);
+    private static final String REPORT_FOLDER = "extent-reports/screenshots/";
+
+    public static String captureViewportScreenshot(WebDriver driver, String fileName) {
+        if (driver == null) {
+            log.warn("Skipping viewport screenshot: WebDriver is null.");
+            return null;
+        }
+        try {
+            File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date());
+            String destPath = System.getProperty("user.dir") + "/" + REPORT_FOLDER
+                    + fileName + "_" + timestamp + ".png";
+
+            Files.createDirectories(Paths.get(System.getProperty("user.dir") + "/" + REPORT_FOLDER));
+            Files.copy(srcFile.toPath(), Paths.get(destPath));
+
+            log.info("Viewport screenshot captured: {}", destPath);
+            return "./screenshots/" + fileName + "_" + timestamp + ".png";
+        } catch (Exception e) {
+            log.error("Failed to capture viewport screenshot", e);
+            return null;
+        }
+    }
+
+    public static String captureFullPageScreenshot(WebDriver driver, String fileName) {
+        if (driver == null) {
+            log.warn("Skipping full-page screenshot: WebDriver is null.");
+            return null;
+        }
+        try {
+            Screenshot screenshot = new AShot()
+                    .shootingStrategy(ShootingStrategies.viewportPasting(1000))
+                    .takeScreenshot(driver);
+
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date());
+            String destPath = System.getProperty("user.dir") + "/" + REPORT_FOLDER
+                    + fileName + "_" + timestamp + ".png";
+
+            Files.createDirectories(Paths.get(System.getProperty("user.dir") + "/" + REPORT_FOLDER));
+            ImageIO.write(screenshot.getImage(), "PNG", new File(destPath));
+
+            log.info("Full-page screenshot captured: {}", destPath);
+            return "./screenshots/" + fileName + "_" + timestamp + ".png";
+        } catch (Exception e) {
+            log.error("Failed to capture full-page screenshot", e);
+            return null;
+        }
+    }
 }
+
+
+
+ 
